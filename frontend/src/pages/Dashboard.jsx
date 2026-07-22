@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import TaskForm from "../components/TaskForm";
@@ -22,7 +22,7 @@ export default function Dashboard() {
     const [taskToEdit, setTaskToEdit] = useState(null);
 
     // Refresh function to load data
-    const loadDashboardData = async (showSpinner = false) => {
+    const loadDashboardData = useCallback(async (showSpinner = false) => {
         if (showSpinner) {
             setLoading(true);
         }
@@ -46,11 +46,12 @@ export default function Dashboard() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [role, email]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadDashboardData(false);
-    }, [role, email]);
+    }, [loadDashboardData]);
 
     // Calculate metrics locally based on loaded tasks
     const tasksArray = Array.isArray(tasks) ? tasks : [];
